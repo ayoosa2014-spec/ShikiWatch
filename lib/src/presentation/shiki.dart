@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -64,12 +65,33 @@ class ShikiApp extends ConsumerWidget {
             //   maxScaleFactor: 1.0,
             // );
 
-            return MediaQuery(
+            final appChild = MediaQuery(
               data: mediaQuery.copyWith(
                 // textScaler: scale,
                 textScaler: const TextScaler.linear(1.05),
               ),
               child: child!,
+            );
+
+            return Shortcuts(
+              shortcuts: <LogicalKeySet, Intent>{
+                LogicalKeySet(LogicalKeyboardKey.select):
+                    const ActivateIntent(),
+                LogicalKeySet(LogicalKeyboardKey.gameButtonA):
+                    const ActivateIntent(),
+                LogicalKeySet(LogicalKeyboardKey.dpadUp):
+                    const DirectionalFocusIntent(TraversalDirection.up),
+                LogicalKeySet(LogicalKeyboardKey.dpadDown):
+                    const DirectionalFocusIntent(TraversalDirection.down),
+                LogicalKeySet(LogicalKeyboardKey.dpadLeft):
+                    const DirectionalFocusIntent(TraversalDirection.left),
+                LogicalKeySet(LogicalKeyboardKey.dpadRight):
+                    const DirectionalFocusIntent(TraversalDirection.right),
+              },
+              child: FocusTraversalGroup(
+                policy: WidgetOrderTraversalPolicy(),
+                child: appChild,
+              ),
             );
           },
         ),
